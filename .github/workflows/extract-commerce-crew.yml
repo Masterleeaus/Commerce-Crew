@@ -1,0 +1,67 @@
+name: Extract Commerce Crew
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Commerce-Crew-GitHub-Ready.zip'
+      - '.github/workflows/extract-commerce-crew.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract repository package
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f Commerce-Crew-GitHub-Ready.zip
+          tmp="$(mktemp -d)"
+          unzip -q Commerce-Crew-GitHub-Ready.zip -d "$tmp"
+
+          # Flatten a single packaging directory if the archive contains one.
+          shopt -s dotglob nullglob
+          entries=("$tmp"/*)
+          if [ ${#entries[@]} -eq 1 ] && [ -d "${entries[0]}" ]; then
+            src="${entries[0]}"
+          else
+            src="$tmp"
+          fi
+
+          # Copy archive contents into repository root, preserving this workflow.
+          rsync -a --exclude='.git/' --exclude='.github/workflows/extract-commerce-crew.yml' "$src"/ ./
+          rm -f Commerce-Crew-GitHub-Ready.zip
+
+          # Remove common packaging noise.
+          find . -type d -name '__MACOSX' -prune -exec rm -rf {} + || true
+          find . -type f \( -name '.DS_Store' -o -name 'Thumbs.db' \) -delete || true
+
+      - name: Verify extracted repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f README.md
+          echo "Top-level repository contents:"
+          find . -maxdepth 2 -not -path './.git/*' | sort | head -200
+
+      - name: Commit extracted source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No extraction changes to commit.'
+            exit 0
+          fi
+          git commit -m 'Build Commerce Crew repository from release package'
+          git push
