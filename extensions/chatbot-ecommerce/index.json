@@ -1,0 +1,9 @@
+{
+  "name": "Commerce Crew Commerce Engine",
+  "slug": "chatbot-ecommerce",
+  "type": "extension",
+  "version": "4.9.0",
+  "provider": "App\\Extensions\\ChatbotEcommerce\\System\\ChatbotEcommerceServiceProvider",
+  "preserve_existing_data": true,
+  "migrations": "database/migrations"
+}

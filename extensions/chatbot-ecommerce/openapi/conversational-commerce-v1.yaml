@@ -1,0 +1,989 @@
+openapi: 3.1.0
+info:
+  title: Chatbot Ecommerce Conversational Commerce API
+  version: 1.6.0
+  description: Public and seller contract for the three-role conversational commerce
+    extension, including unified native and authoritative external order projections,
+    settlement reconciliation, exception management, and governed commerce actions.
+servers:
+- url: /api/v3/chatbot/ecommerce
+paths:
+  /{chatbot}/session-authorities:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    post:
+      summary: Issue a signed, expiring, capability-scoped storefront session
+      description: Public callers receive a server-generated session identifier. Only
+        the authenticated chatbot owner may bind an existing session or customer identity.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                capabilities:
+                  type: array
+                  items:
+                    type: string
+                ttl_seconds:
+                  type: integer
+                  minimum: 300
+                  maximum: 86400
+      responses:
+        '201':
+          description: Signed commerce session authority
+        '403':
+          description: Storefront origin is not trusted
+        '503':
+          description: Session authority secret is not configured
+  /commerce/tools:
+    get:
+      summary: List native commerce AI tools and approval levels
+      responses:
+        '200':
+          description: Tool definitions
+  /{chatbot}/session/{sessionId}/commerce/context:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    - $ref: '#/components/parameters/SessionId'
+    get:
+      summary: Read the stateful conversational context stack
+      responses:
+        '200':
+          description: Current context
+    patch:
+      summary: Update explicit context fields
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContextUpdate'
+      responses:
+        '200':
+          description: Updated context
+  /{chatbot}/session/{sessionId}/commerce/tools/execute:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    - $ref: '#/components/parameters/SessionId'
+    post:
+      summary: Execute an Inform, Prepare, or approved Execute tool
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - tool
+              properties:
+                tool:
+                  type: string
+                arguments:
+                  type: object
+                  additionalProperties: true
+      responses:
+        '200':
+          description: Tool result, structured UI, context, and progressive stages
+        '422':
+          description: Ambiguous reference, invalid approval, or budget lock
+  /{chatbot}/session/{sessionId}/commerce/actions/{actionUuid}/execute:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    - $ref: '#/components/parameters/SessionId'
+    - name: actionUuid
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    post:
+      summary: Execute one user-approved prepared action
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - approval_token
+              properties:
+                approval_token:
+                  type: string
+                  minLength: 32
+      responses:
+        '200':
+          description: Approved action executed
+        '422':
+          description: Expired, invalid, ambiguous, or budget-blocked action
+  /{chatbot}/session/{sessionId}/orders:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    - $ref: '#/components/parameters/SessionId'
+    get:
+      summary: List customer orders for the session or linked identity
+      responses:
+        '200':
+          description: Paginated orders
+  /{chatbot}/session/{sessionId}/orders/{order}:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    - $ref: '#/components/parameters/SessionId'
+    - name: order
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      summary: Read an order and its timeline
+      responses:
+        '200':
+          description: Order
+        '404':
+          description: Order is outside the session or identity scope
+  /{chatbot}/session/{sessionId}/orders/{order}/returns:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    - $ref: '#/components/parameters/SessionId'
+    - name: order
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    post:
+      summary: Request a return after explicit approval
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - items
+              - resolution
+              properties:
+                items:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    required:
+                    - order_item_uuid
+                    - quantity
+                    properties:
+                      order_item_uuid:
+                        type: string
+                        format: uuid
+                      quantity:
+                        type: integer
+                        minimum: 1
+                      reason_code:
+                        type: string
+                      condition:
+                        type: string
+                resolution:
+                  type: string
+                  enum:
+                  - refund
+                  - exchange
+                  - store_credit
+                reason:
+                  type: string
+      responses:
+        '201':
+          description: Return request created
+  /commerce/roles:
+    get:
+      summary: List the three commerce roles and authority boundaries
+      responses:
+        '200':
+          description: Role definitions
+  /{chatbot}/session/{sessionId}/support/messages:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    - $ref: '#/components/parameters/SessionId'
+    post:
+      summary: Ingest an idempotent customer communications message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupportMessageInput'
+      responses:
+        '201':
+          description: Message stored and triaged
+  /{chatbot}/session/{sessionId}/support/threads/{thread}/context:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    - $ref: '#/components/parameters/SessionId'
+    - $ref: '#/components/parameters/Thread'
+    get:
+      summary: Read fact-grounded customer support context
+      responses:
+        '200':
+          description: Cart, order, payment, fulfilment, and return context
+  /{chatbot}/session/{sessionId}/support/threads/{thread}/draft:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    - $ref: '#/components/parameters/SessionId'
+    - $ref: '#/components/parameters/Thread'
+    post:
+      summary: Draft a fact-grounded reply without sending it
+      responses:
+        '200':
+          description: Reply draft, authority decision, facts, and UI fallback
+  /{chatbot}/session/{sessionId}/support/threads/{thread}/actions:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    - $ref: '#/components/parameters/SessionId'
+    - $ref: '#/components/parameters/Thread'
+    post:
+      summary: Prepare and policy-evaluate a customer-service action
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupportActionInput'
+      responses:
+        '201':
+          description: Prepared action or human escalation
+  /commerce/roles/resolve:
+    post:
+      summary: Resolve the allowed role for an actor and conversation context
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleResolutionRequest'
+      responses:
+        '200':
+          description: Resolved role
+  /{chatbot}/session/{sessionId}/support/threads/{thread}/actions/{actionUuid}/execute:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    - $ref: '#/components/parameters/SessionId'
+    - $ref: '#/components/parameters/Thread'
+    - name: actionUuid
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    post:
+      summary: Execute an approved or explicitly in-limit support action
+      responses:
+        '200':
+          description: Action result
+  /{chatbot}/session/{sessionId}/support/threads/{thread}/escalations:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    - $ref: '#/components/parameters/SessionId'
+    - $ref: '#/components/parameters/Thread'
+    post:
+      summary: Create a human handoff with factual context
+      responses:
+        '201':
+          description: Escalation and handoff card
+  /{chatbot}/support/threads/{thread}:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    - $ref: '#/components/parameters/Thread'
+    patch:
+      summary: Authenticated seller updates identity verification, assignment, priority,
+        or lifecycle state
+      responses:
+        '200':
+          description: Updated support thread
+  /{chatbot}/session/{sessionId}/marketplaces/searches:
+    post:
+      operationId: createMarketplaceSearch
+      summary: Start a read-only marketplace product search
+      responses:
+        '200':
+          description: Search completed synchronously
+        '202':
+          description: Search queued
+  /{chatbot}/session/{sessionId}/marketplaces/searches/{search}:
+    get:
+      operationId: getMarketplaceSearch
+      summary: Poll progressive marketplace search results
+      responses:
+        '200':
+          description: Search and current result set
+  /{chatbot}/marketplace-connections:
+    get:
+      operationId: listMarketplaceConnections
+      summary: List seller-owned read-only marketplace connections
+      responses:
+        '200':
+          description: Connections
+    post:
+      operationId: createMarketplaceConnection
+      summary: Create a connection using a credential-vault reference
+      responses:
+        '201':
+          description: Connection created
+  /{chatbot}/marketplace-orders:
+    get:
+      operationId: listMarketplaceOrders
+      summary: List imported external marketplace order snapshots
+      responses:
+        '200':
+          description: Imported marketplace orders
+  /{chatbot}/marketplace-write-proposals:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    get:
+      summary: List seller-owned marketplace write proposals
+      responses:
+        '200':
+          description: Paginated write proposals and attempt history
+  /{chatbot}/marketplace-connections/{connection}/listings/{externalListingId}/marketplace-write-proposals:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    - name: connection
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: externalListingId
+      in: path
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Prepare one version-checked marketplace listing write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - operation
+              - expected_source_hash
+              - idempotency_key
+              properties:
+                operation:
+                  type: string
+                  enum:
+                  - update_listing
+                  - update_price
+                  - update_inventory
+                  - pause_listing
+                  - resume_listing
+                changes:
+                  type: object
+                  additionalProperties: true
+                expected_source_hash:
+                  type: string
+                  minLength: 64
+                  maxLength: 64
+                idempotency_key:
+                  type: string
+                  maxLength: 191
+      responses:
+        '201':
+          description: Prepared proposal, conflict analysis, and one-time approval
+            token
+        '422':
+          description: Unsupported write, stale snapshot, inventory conflict, or unsafe
+            request
+  /{chatbot}/marketplace-write-proposals/{proposal}/approve:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    - name: proposal
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    post:
+      summary: Approve a prepared marketplace write with its expiring signed token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - approval_token
+              properties:
+                approval_token:
+                  type: string
+      responses:
+        '200':
+          description: Approved proposal
+        '422':
+          description: Invalid, expired, mismatched, or conflict-blocked approval
+  /{chatbot}/marketplace-write-proposals/{proposal}/execute:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    - name: proposal
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    post:
+      summary: Execute one approved marketplace write after a fresh provider read
+      responses:
+        '200':
+          description: Executed write with authoritative after state
+        '202':
+          description: Write queued on chatbot-ecommerce-marketplace-write
+        '422':
+          description: Approval, source-version, inventory, capability, or rate-limit
+            failure
+  /{chatbot}/marketplace-write-proposals/{proposal}/rollback:
+    parameters:
+    - $ref: '#/components/parameters/Chatbot'
+    - name: proposal
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    post:
+      summary: Roll back one executed marketplace write if no newer provider change
+        exists
+      responses:
+        '200':
+          description: Rolled-back proposal and provider evidence
+        '422':
+          description: Rollback blocked because the listing changed or provider rejected
+            it
+  /{chatbot}/brand-voice-profiles:
+    get:
+      summary: List seller brand voice profiles
+      responses:
+        '200':
+          description: Brand voice profiles
+    post:
+      summary: Create a seller brand voice profile
+      responses:
+        '201':
+          description: Brand voice profile created
+  /{chatbot}/product-content-profiles:
+    get:
+      summary: List canonical product content profiles
+      responses:
+        '200':
+          description: Product content profiles
+    post:
+      summary: Create a canonical product content profile
+      responses:
+        '201':
+          description: Product content profile created
+  /{chatbot}/marketplace-connections/{connection}/listings/{externalListingId}/listing-intelligence-runs:
+    post:
+      summary: Analyse an observed marketplace listing for evidence, brand and policy
+        risks
+      responses:
+        '200':
+          description: Listing intelligence run
+  /{chatbot}/listing-intelligence-runs/{run}/rewrite-proposals:
+    post:
+      summary: Generate a marketplace-specific rewrite preview
+      responses:
+        '201':
+          description: Rewrite preview created
+  /{chatbot}/marketplace-connections/{connection}/rewrite-proposals/{rewrite}/prepare-write:
+    post:
+      summary: Prepare a compliant rewrite through the governed marketplace write
+        flow
+      responses:
+        '201':
+          description: Marketplace write proposal and approval token
+  /{chatbot}/marketplace-inventory/policies:
+    get:
+      summary: List seller-owned marketplace inventory reconciliation policies
+      responses:
+        '200':
+          description: Policies
+    post:
+      summary: Create or replace a scoped reconciliation policy
+      responses:
+        '201':
+          description: Policy saved
+  /{chatbot}/marketplace-inventory/mappings:
+    get:
+      summary: List explicit marketplace listing to internal variant mappings
+      responses:
+        '200':
+          description: Mappings
+    post:
+      summary: Create or verify a marketplace inventory mapping
+      responses:
+        '201':
+          description: Mapping saved
+  /{chatbot}/marketplace-connections/{connection}/inventory-scan:
+    post:
+      summary: Scan marketplace quantities against reservation-aware internal availability
+      responses:
+        '200':
+          description: Completed scan with conflict counts
+  /{chatbot}/marketplace-inventory/conflicts:
+    get:
+      summary: List current and historical marketplace inventory conflicts
+      responses:
+        '200':
+          description: Inventory conflicts
+  /{chatbot}/marketplace-inventory/conflicts/{conflict}/prepare-correction:
+    post:
+      summary: Prepare a version-checked inventory correction requiring seller approval
+      responses:
+        '200':
+          description: Conflict and marketplace write approval proposal
+  /{chatbot}/marketplace-inventory/conflicts/{conflict}/acknowledge:
+    post:
+      summary: Acknowledge a conflict without changing marketplace stock
+      responses:
+        '200':
+          description: Conflict acknowledged
+  /{chatbot}/marketplace-inventory/conflicts/{conflict}/ignore:
+    post:
+      summary: Ignore a conflict with an audit reason and optional expiry
+      responses:
+        '200':
+          description: Conflict ignored
+  /{chatbot}/unified-orders:
+    parameters: &id002
+    - &id001
+      $ref: '#/components/parameters/Chatbot'
+    get:
+      summary: List unified native and authoritative external orders
+      security:
+      - SellerBearer: []
+      parameters:
+      - name: exceptions_only
+        in: query
+        schema:
+          type: boolean
+      - name: unreconciled_only
+        in: query
+        schema:
+          type: boolean
+      - name: source_type
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Unified seller order workbench
+  /{chatbot}/unified-orders/{unifiedOrder}:
+    parameters:
+    - *id001
+    - name: unifiedOrder
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    get:
+      summary: Read one unified order with immutable snapshots, settlements, reconciliations,
+        exceptions and linked support threads
+      security:
+      - SellerBearer: []
+      responses:
+        '200':
+          description: Unified order detail
+        '404':
+          description: Order does not belong to the chatbot
+  /{chatbot}/unified-orders/sync:
+    parameters: *id002
+    post:
+      summary: Refresh native and external order projections and scan exceptions
+      security:
+      - SellerBearer: []
+      responses:
+        '202':
+          description: Projection and exception scan accepted
+  /{chatbot}/unified-orders/import-external:
+    parameters: *id002
+    post:
+      summary: Import an authoritative normalized Shopify, WooCommerce or marketplace
+        order snapshot
+      security:
+      - SellerBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalOrderProjectionInput'
+      responses:
+        '200':
+          description: External order projected
+        '422':
+          description: Invalid or unsupported source snapshot
+  /{chatbot}/unified-orders/{unifiedOrder}/settlements/import:
+    parameters:
+    - *id001
+    - name: unifiedOrder
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    post:
+      summary: Import immutable normalized settlement, fee, refund, chargeback and
+        payout entries
+      security:
+      - SellerBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettlementImportInput'
+      responses:
+        '201':
+          description: Settlement entries imported and order reconciled
+        '422':
+          description: Currency mismatch or immutable entry conflict
+  /{chatbot}/unified-orders/{unifiedOrder}/reconcile:
+    parameters:
+    - *id001
+    - name: unifiedOrder
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    post:
+      summary: Recalculate expected and reported net payout and rescan order exceptions
+      security:
+      - SellerBearer: []
+      responses:
+        '200':
+          description: Reconciled unified order
+  /{chatbot}/order-exceptions:
+    parameters: *id002
+    get:
+      summary: List invalid-address, payment, fulfilment, stock, return and settlement
+        exceptions
+      security:
+      - SellerBearer: []
+      responses:
+        '200':
+          description: Order exception queue
+  /{chatbot}/order-exceptions/{exception}/acknowledge:
+    parameters:
+    - *id001
+    - name: exception
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    post:
+      summary: Acknowledge an order exception without changing the source order
+      security:
+      - SellerBearer: []
+      responses:
+        '200':
+          description: Exception acknowledged
+  /{chatbot}/order-exceptions/{exception}/assign:
+    parameters:
+    - *id001
+    - name: exception
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    post:
+      summary: Assign an order exception to a seller user
+      security:
+      - SellerBearer: []
+      responses:
+        '200':
+          description: Exception assigned
+  /{chatbot}/order-exceptions/{exception}/resolve:
+    parameters:
+    - *id001
+    - name: exception
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    post:
+      summary: Resolve an exception with immutable event history
+      security:
+      - SellerBearer: []
+      responses:
+        '200':
+          description: Exception resolved
+  /{chatbot}/unified-orders/{unifiedOrder}/refund-proposals:
+    parameters:
+    - *id001
+    - name: unifiedOrder
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    post:
+      summary: Prepare a seller-approved refund proposal without executing a provider
+        refund
+      security:
+      - SellerBearer: []
+      responses:
+        '201':
+          description: Refund proposal prepared
+  /{chatbot}/unified-orders/{unifiedOrder}/customer-contact-proposals:
+    parameters:
+    - *id001
+    - name: unifiedOrder
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    post:
+      summary: Prepare a grounded customer-contact draft for the existing channel
+        transport
+      security:
+      - SellerBearer: []
+      responses:
+        '201':
+          description: Customer-contact proposal prepared
+components:
+  securitySchemes:
+    CommerceSession:
+      type: apiKey
+      in: header
+      name: X-Commerce-Session-Token
+      description: HMAC-SHA256 token bound to one chatbot, server-issued session,
+        storefront origin, expiry, and explicit capabilities.
+    SellerBearer:
+      type: http
+      scheme: bearer
+  parameters:
+    Chatbot:
+      name: chatbot
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    SessionId:
+      name: sessionId
+      in: path
+      required: true
+      schema:
+        type: string
+        maxLength: 191
+    Thread:
+      name: thread
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    ContextUpdate:
+      type: object
+      properties:
+        current_product_ids:
+          type: array
+          maxItems: 50
+          items:
+            type: integer
+        last_query:
+          type: string
+        last_filters:
+          type: object
+          additionalProperties: true
+        short_term_preferences:
+          type: object
+          additionalProperties: true
+        selected_product_id:
+          type: integer
+        selected_variant_id:
+          type: integer
+        compressed_summary:
+          type: string
+    RoleResolutionRequest:
+      type: object
+      required:
+      - actor_type
+      properties:
+        actor_type:
+          type: string
+          enum:
+          - customer
+          - seller
+          - unknown
+        requested_role:
+          type:
+          - string
+          - 'null'
+          enum:
+          - shopping_assistant
+          - seller_steward
+          - customer_communications
+          - null
+        authenticated:
+          type: boolean
+        channel:
+          type: string
+        intent:
+          type:
+          - string
+          - 'null'
+        inbound_support:
+          type: boolean
+    SupportMessageInput:
+      type: object
+      required:
+      - channel
+      properties:
+        channel:
+          type: string
+        external_thread_id:
+          type:
+          - string
+          - 'null'
+        external_message_id:
+          type:
+          - string
+          - 'null'
+        customer_identity_id:
+          type:
+          - integer
+          - 'null'
+        body:
+          type:
+          - string
+          - 'null'
+          maxLength: 20000
+        attachments:
+          type: array
+          maxItems: 20
+        intent:
+          type:
+          - string
+          - 'null'
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+    SupportActionInput:
+      type: object
+      required:
+      - action_type
+      - payload
+      - idempotency_key
+      properties:
+        action_type:
+          type: string
+          enum:
+          - prepare_return
+          - request_return
+          - cancel_order
+          - issue_refund
+          - correct_address
+          - offer_discount
+          - replace_item
+          - issue_store_credit
+        payload:
+          type: object
+          additionalProperties: true
+        idempotency_key:
+          type: string
+          maxLength: 191
+    ExternalOrderProjectionInput:
+      type: object
+      required:
+      - source_type
+      - source_scope
+      - source_order_id
+      - snapshot
+      properties:
+        source_type:
+          type: string
+          enum:
+          - shopify
+          - woocommerce
+          - amazon
+          - ebay
+          - etsy
+          - generic
+        source_scope:
+          type: string
+          maxLength: 191
+        source_order_id:
+          type: string
+          maxLength: 191
+        connection_id:
+          type:
+          - integer
+          - 'null'
+        snapshot:
+          type: object
+          additionalProperties: true
+    SettlementImportInput:
+      type: object
+      required:
+      - provider
+      - entries
+      properties:
+        provider:
+          type: string
+          maxLength: 60
+        source_scope:
+          type:
+          - string
+          - 'null'
+          maxLength: 191
+          description: Provider account or connection scope used to prevent cross-account settlement ID collisions.
+        source_batch_id:
+          type:
+          - string
+          - 'null'
+          maxLength: 191
+        entries:
+          type: array
+          minItems: 1
+          maxItems: 1000
+          items:
+            type: object
+            required:
+            - external_entry_id
+            - type
+            - amount
+            properties:
+              external_entry_id:
+                type: string
+                maxLength: 191
+              type:
+                type: string
+                enum:
+                - sale
+                - fee
+                - tax
+                - shipping_cost
+                - refund
+                - chargeback
+                - payout
+                - adjustment
+              amount:
+                type: integer
+              currency:
+                type: string
+                minLength: 3
+                maxLength: 3
+              occurred_at:
+                type:
+                - string
+                - 'null'
+                format: date-time

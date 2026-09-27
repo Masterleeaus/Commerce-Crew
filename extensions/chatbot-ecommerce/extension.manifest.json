@@ -1,0 +1,395 @@
+{
+  "$schema": "./schemas/extension-manifest.schema.json",
+  "schema_version": "1.0",
+  "key": "chatbot-ecommerce",
+  "name": "Commerce Crew Commerce Engine",
+  "version": "4.9.0",
+  "folder": "ChatbotEcommerce",
+  "namespace": "App\\Extensions\\ChatbotEcommerce",
+  "provider": "App\\Extensions\\ChatbotEcommerce\\System\\ChatbotEcommerceServiceProvider",
+  "family": "billing",
+  "compatibility": {
+    "magicai": ">=10.91",
+    "php": "^8.2",
+    "laravel": "^10.0 || ^11.0"
+  },
+  "dependencies": {
+    "parent": {
+      "key": "chatbot",
+      "version": ">=7.7.0"
+    },
+    "required": [],
+    "optional": [
+      {
+        "key": "chatbot-customer-tag",
+        "version": ">=1.0"
+      },
+      {
+        "key": "chatbot-whatsapp",
+        "version": ">=1.0"
+      }
+    ],
+    "peers": [],
+    "conflicts": []
+  },
+  "capabilities": [
+    "commerce.catalogue",
+    "commerce.inventory",
+    "commerce.cart",
+    "commerce.checkout",
+    "commerce.shipping",
+    "commerce.tax",
+    "commerce.fulfilment",
+    "commerce.payments",
+    "commerce.bnpl",
+    "commerce.marketplace-assisted-shopping",
+    "commerce.native-shopping",
+    "commerce.rental-hire-receivables",
+    "commerce.conversational_context",
+    "commerce.failure_translation",
+    "commerce.budget_locks",
+    "commerce.conversational_cards",
+    "commerce.native_orders",
+    "commerce.returns",
+    "commerce.action_rollback",
+    "commerce.three_role_commerce",
+    "commerce.customer_communications",
+    "commerce.customer_message_triage",
+    "commerce.customer_support_approvals",
+    "commerce.human_handoff",
+    "commerce.marketplace-read-mode",
+    "commerce.marketplace-search",
+    "commerce.marketplace-order-import",
+    "commerce.marketplace-write-safety",
+    "commerce.marketplace-write-approvals",
+    "commerce.marketplace-write-rollback",
+    "commerce.marketplace-inventory-conflicts",
+    "commerce.marketplace-rate-limit-governance",
+    "commerce.marketplace-bulk-operations",
+    "commerce.marketplace-bulk-dry-run",
+    "commerce.marketplace-bulk-partial-rollback",
+    "commerce.listing-intelligence",
+    "commerce.marketplace-compliance",
+    "commerce.brand-voice-profiles",
+    "commerce.evidence-backed-claims",
+    "commerce.safe-listing-rewrites",
+    "commerce.marketplace-inventory-reconciliation",
+    "commerce.inventory-conflict-resolution",
+    "commerce.reservation-aware-channel-allocation",
+    "commerce.inventory-conflict-history",
+    "commerce.credential-vault",
+    "commerce.signed-session-authority",
+    "commerce.tenant-isolation",
+    "commerce.credential-rotation",
+    "commerce.fail-closed-public-sessions",
+    "commerce.registered-scheduler",
+    "commerce.tenant-aware-queues",
+    "commerce.async-payment-webhooks",
+    "commerce.provider-circuit-breakers",
+    "commerce.lifecycle-management",
+    "commerce.unified-order-workbench",
+    "commerce.external-order-projections",
+    "commerce.settlement-reconciliation",
+    "commerce.order-exception-management",
+    "commerce.order-customer-communication-linking"
+  ],
+  "contributions": [],
+  "permissions": [
+    "chatbot-ecommerce.read",
+    "chatbot-ecommerce.manage-catalogue",
+    "chatbot-ecommerce.manage-inventory",
+    "chatbot-ecommerce.manage-pricing",
+    "chatbot-ecommerce.manage-checkout",
+    "chatbot-ecommerce.manage-payments",
+    "chatbot-ecommerce.manage-bnpl",
+    "chatbot-ecommerce.manage-rental-hire",
+    "chatbot-ecommerce.manage-orders",
+    "chatbot-ecommerce.manage-budget-locks",
+    "chatbot-ecommerce.rollback-actions",
+    "chatbot-ecommerce.manage-customer-communications",
+    "chatbot-ecommerce.manage-support-policies",
+    "chatbot-ecommerce.approve-support-actions",
+    "chatbot-ecommerce.resolve-escalations",
+    "chatbot-ecommerce.manage-marketplace-connections",
+    "chatbot-ecommerce.import-marketplace-orders",
+    "chatbot-ecommerce.prepare-marketplace-writes",
+    "chatbot-ecommerce.approve-marketplace-writes",
+    "chatbot-ecommerce.execute-marketplace-writes",
+    "chatbot-ecommerce.rollback-marketplace-writes",
+    "chatbot-ecommerce.prepare-marketplace-bulk-writes",
+    "chatbot-ecommerce.approve-marketplace-bulk-writes",
+    "chatbot-ecommerce.execute-marketplace-bulk-writes",
+    "chatbot-ecommerce.rollback-marketplace-bulk-writes",
+    "chatbot-ecommerce.manage-brand-voice",
+    "chatbot-ecommerce.manage-product-content",
+    "chatbot-ecommerce.manage-listing-compliance",
+    "chatbot-ecommerce.prepare-listing-rewrites",
+    "chatbot-ecommerce.manage-marketplace-inventory-mappings",
+    "chatbot-ecommerce.scan-marketplace-inventory",
+    "chatbot-ecommerce.resolve-marketplace-inventory-conflicts",
+    "chatbot-ecommerce.manage-credentials",
+    "chatbot-ecommerce.issue-session-authority",
+    "chatbot-ecommerce.manage-order-workbench",
+    "chatbot-ecommerce.import-settlements",
+    "chatbot-ecommerce.resolve-order-exceptions"
+  ],
+  "external_hosts": [],
+  "routes": [
+    {
+      "profile": "authenticated-user",
+      "prefix": "dashboard/chatbot-ecommerce",
+      "name_prefix": "dashboard.chatbot-ecommerce."
+    },
+    {
+      "profile": "public-embed",
+      "prefix": "api/v2/chatbot",
+      "name_prefix": "api.v2.chatbot."
+    },
+    {
+      "profile": "public-embed",
+      "prefix": "api/v3/chatbot/ecommerce",
+      "name_prefix": "api.v3.chatbot.ecommerce."
+    },
+    {
+      "profile": "admin",
+      "prefix": "api/v3/chatbot/ecommerce",
+      "name_prefix": "api.v3.chatbot.ecommerce.admin."
+    },
+    {
+      "profile": "public-webhook",
+      "prefix": "api/v3/chatbot/ecommerce/payment-webhooks",
+      "name_prefix": "api.v3.chatbot.ecommerce.payment-webhooks."
+    }
+  ],
+  "database": {
+    "migrations": true,
+    "owned_tables": [
+      "ext_chatbot_bnpl_offers",
+      "ext_chatbot_bnpl_provider_profiles",
+      "ext_chatbot_cart_lines",
+      "ext_chatbot_cart_operations",
+      "ext_chatbot_carts",
+      "ext_chatbot_checkout_operations",
+      "ext_chatbot_checkout_sessions",
+      "ext_chatbot_commerce_action_journal",
+      "ext_chatbot_commerce_communication_actions",
+      "ext_chatbot_commerce_communication_messages",
+      "ext_chatbot_commerce_communication_policies",
+      "ext_chatbot_commerce_communication_threads",
+      "ext_chatbot_commerce_contexts",
+      "ext_chatbot_commerce_error_lexicon",
+      "ext_chatbot_commerce_escalations",
+      "ext_chatbot_commerce_order_events",
+      "ext_chatbot_commerce_order_items",
+      "ext_chatbot_commerce_orders",
+      "ext_chatbot_commerce_return_items",
+      "ext_chatbot_commerce_returns",
+      "ext_chatbot_commerce_spend_limits",
+      "ext_chatbot_coupon_usages",
+      "ext_chatbot_coupons",
+      "ext_chatbot_fulfillment_items",
+      "ext_chatbot_fulfillments",
+      "ext_chatbot_inventory",
+      "ext_chatbot_inventory_adjustments",
+      "ext_chatbot_inventory_location_stock",
+      "ext_chatbot_inventory_locations",
+      "ext_chatbot_inventory_reservations",
+      "ext_chatbot_marketplace_connections",
+      "ext_chatbot_marketplace_listing_snapshots",
+      "ext_chatbot_marketplace_order_line_snapshots",
+      "ext_chatbot_marketplace_order_snapshots",
+      "ext_chatbot_marketplace_search_results",
+      "ext_chatbot_marketplace_searches",
+      "ext_chatbot_marketplace_sync_cursors",
+      "ext_chatbot_marketplace_sync_runs",
+      "ext_chatbot_payment_intents",
+      "ext_chatbot_payment_operations",
+      "ext_chatbot_payment_refunds",
+      "ext_chatbot_payment_webhook_events",
+      "ext_chatbot_pricing_rules",
+      "ext_chatbot_pricing_snapshots",
+      "ext_chatbot_product_categories",
+      "ext_chatbot_product_variants",
+      "ext_chatbot_products",
+      "ext_chatbot_rental_accounts",
+      "ext_chatbot_rental_adjustments",
+      "ext_chatbot_rental_agreement_rates",
+      "ext_chatbot_rental_agreements",
+      "ext_chatbot_rental_charges",
+      "ext_chatbot_rental_ledger_entries",
+      "ext_chatbot_rental_payment_allocations",
+      "ext_chatbot_rental_payments",
+      "ext_chatbot_rental_receipts",
+      "ext_chatbot_shipping_methods",
+      "ext_chatbot_shipping_quotes",
+      "ext_chatbot_shipping_zones",
+      "ext_chatbot_tax_exemptions",
+      "ext_chatbot_tax_rates",
+      "ext_chatbot_tax_zones",
+      "ext_chatbot_marketplace_write_proposals",
+      "ext_chatbot_marketplace_write_attempts",
+      "ext_chatbot_marketplace_rate_limits",
+      "ext_chatbot_marketplace_bulk_batches",
+      "ext_chatbot_marketplace_bulk_items",
+      "ext_chatbot_brand_voice_profiles",
+      "ext_chatbot_product_content_profiles",
+      "ext_chatbot_listing_compliance_rules",
+      "ext_chatbot_listing_intelligence_runs",
+      "ext_chatbot_listing_intelligence_findings",
+      "ext_chatbot_listing_rewrite_proposals",
+      "ext_chatbot_marketplace_inventory_policies",
+      "ext_chatbot_marketplace_inventory_mappings",
+      "ext_chatbot_marketplace_inventory_scan_runs",
+      "ext_chatbot_marketplace_inventory_conflicts",
+      "ext_chatbot_marketplace_inventory_conflict_events",
+      "ext_chatbot_ecommerce_credentials",
+      "ext_chatbot_ecommerce_lifecycle_states",
+      "ext_chatbot_provider_circuit_breakers",
+      "ext_chatbot_unified_orders",
+      "ext_chatbot_unified_order_source_snapshots",
+      "ext_chatbot_order_settlement_entries",
+      "ext_chatbot_order_reconciliations",
+      "ext_chatbot_order_exceptions",
+      "ext_chatbot_order_exception_events",
+      "ext_chatbot_order_workbench_actions"
+    ],
+    "shared_tables": [
+      "ext_chatbots"
+    ]
+  },
+  "queues": {
+    "used": true,
+    "queue_names": [
+      "chatbot-ecommerce-marketplace-read",
+      "chatbot-ecommerce-marketplace-write",
+      "chatbot-ecommerce-inventory-reconciliation",
+      "chatbot-ecommerce-payment-webhooks"
+    ],
+    "tenant_context_required": true
+  },
+  "schedules": [
+    {
+      "key": "chatbot-ecommerce:expire-reservations",
+      "frequency": "everyMinute",
+      "on_one_server": true,
+      "without_overlapping": true
+    },
+    {
+      "key": "chatbot-ecommerce:carts-expire",
+      "frequency": "hourly",
+      "on_one_server": true,
+      "without_overlapping": true
+    },
+    {
+      "key": "chatbot-ecommerce:expire-coupon-usages",
+      "frequency": "everyFiveMinutes",
+      "on_one_server": true,
+      "without_overlapping": true
+    },
+    {
+      "key": "chatbot-ecommerce:expire-checkouts",
+      "frequency": "everyMinute",
+      "on_one_server": true,
+      "without_overlapping": true
+    },
+    {
+      "key": "chatbot-ecommerce:expire-shipping-quotes",
+      "frequency": "everyMinute",
+      "on_one_server": true,
+      "without_overlapping": true
+    },
+    {
+      "key": "chatbot-ecommerce:rental-hire-generate-charges",
+      "frequency": "daily",
+      "on_one_server": true,
+      "without_overlapping": true
+    },
+    {
+      "key": "chatbot-ecommerce:rental-hire-expire-payments",
+      "frequency": "hourly",
+      "on_one_server": true,
+      "without_overlapping": true
+    },
+    {
+      "key": "chatbot-ecommerce:payments-expire",
+      "frequency": "everyMinute",
+      "on_one_server": true,
+      "without_overlapping": true
+    },
+    {
+      "key": "chatbot-ecommerce:bnpl-expire",
+      "frequency": "everyMinute",
+      "on_one_server": true,
+      "without_overlapping": true
+    },
+    {
+      "key": "chatbot-ecommerce:contexts-expire",
+      "frequency": "hourly",
+      "on_one_server": true,
+      "without_overlapping": true
+    },
+    {
+      "key": "chatbot-ecommerce:payment-webhooks-retry",
+      "frequency": "everyMinute",
+      "on_one_server": true,
+      "without_overlapping": true
+    },
+    {
+      "key": "chatbot-ecommerce:marketplace-import-orders",
+      "frequency": "hourly",
+      "on_one_server": true,
+      "without_overlapping": true
+    },
+    {
+      "key": "chatbot-ecommerce:marketplace-scan-inventory",
+      "frequency": "everyFiveMinutes",
+      "on_one_server": true,
+      "without_overlapping": true
+    }
+  ],
+  "webhooks": [
+    {
+      "provider": "payment-provider",
+      "verification": "HMAC-SHA256 timestamp.payload",
+      "fail_closed": true,
+      "idempotency": true,
+      "replay_window_seconds": 300,
+      "processing": "persist-acknowledge-queue",
+      "queue": "chatbot-ecommerce-payment-webhooks",
+      "dead_letter": true
+    }
+  ],
+  "billing": {
+    "mode": "none",
+    "reservation_required": false,
+    "ledger": "ext_chatbot_payment_intents"
+  },
+  "data": {
+    "tenant_key": "chatbot_id",
+    "default_uninstall_policy": "retain",
+    "owned_paths": [
+      "docs/superpowers/plans/2026-08-03-three-role-commerce.md",
+      "openapi/conversational-commerce-v1.yaml",
+      "docs/superpowers/plans/2026-08-03-marketplace-read-mode.md",
+      "docs/superpowers/plans/2026-08-03-marketplace-write-safety.md"
+    ],
+    "credential_storage": "credential-vault"
+  },
+  "lifecycle": {
+    "register_key": true,
+    "uninstall": true,
+    "idempotent": true,
+    "supports_disable": true,
+    "upgrade_strategy": "forward-only additive migrations with financial data retention"
+  },
+  "tests": [
+    "unit",
+    "feature",
+    "architecture",
+    "security"
+  ],
+  "support": {
+    "telegram": "heew_support",
+    "documentation": "README.md"
+  }
+}

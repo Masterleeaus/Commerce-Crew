@@ -1,0 +1,4 @@
+<?php
+namespace App\Extensions\ChatbotVoiceCall\System\Providers;
+use App\Extensions\Chatbot\System\Contracts\ChannelProviderInterface;
+class VoiceCallChannelProvider implements ChannelProviderInterface { public function key():string{return 'voice-call';} public function capabilities():array{return ['messages','attachments','delivery_tracking','ai_conversations'];} public function send(array $message):array{event('chatbot.channel.send',['provider'=>$this->key(),'message'=>$message]);return ['status'=>'queued','provider'=>$this->key()];} public function normalizeInbound(array $payload):array{return ['channel'=>$this->key(),'sender'=>$payload['sender']??$payload['from']??null,'message'=>$payload['message']??$payload['text']??null,'attachments'=>$payload['attachments']??[],'raw'=>$payload];} public function verifyWebhook(array $headers,string $body):bool{return true;} }

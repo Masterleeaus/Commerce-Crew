@@ -1,0 +1,6 @@
+{
+  "name": "Commerce Crew Commerce Engine",
+  "type": "extension",
+  "version": "4.9.0",
+  "description": "Three-role conversational commerce engine spanning native shopping, marketplaces, inventory, orders, payments, BNPL, returns and governed operations."
+}

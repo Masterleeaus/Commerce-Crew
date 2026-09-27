@@ -1,0 +1,3 @@
+<?php
+namespace App\Extensions\ChatbotBooking\System\Services;use App\Extensions\ChatbotBooking\System\Models\Appointment;
+class BookingRuntime{public function available(int $calendarId,\DateTimeInterface $from,\DateTimeInterface $to):array{$busy=Appointment::query()->where('calendar_id',$calendarId)->whereNotIn('status',['cancelled'])->where('starts_at','<',$to)->where('ends_at','>',$from)->get(['starts_at','ends_at']);return ['calendar_id'=>$calendarId,'from'=>$from->format(DATE_ATOM),'to'=>$to->format(DATE_ATOM),'busy'=>$busy->toArray()];}public function book(array $data):Appointment{return Appointment::query()->create($data);}public function waitlist(array $data):Appointment{$data['status']='waitlisted';return $this->book($data);}}

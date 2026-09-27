@@ -1,0 +1,3 @@
+<?php
+use Illuminate\Database\Migrations\Migration;use Illuminate\Database\Schema\Blueprint;use Illuminate\Support\Facades\Schema;
+return new class extends Migration{public function up():void{if(!Schema::hasTable('ext_chatbot_feedback'))Schema::create('ext_chatbot_feedback',function(Blueprint$t){$t->id();$t->foreignId('conversation_id')->nullable()->index();$t->string('kind')->index();$t->unsignedTinyInteger('score')->nullable();$t->text('message')->nullable();$t->json('answers')->nullable();$t->string('status')->default('received')->index();$t->boolean('is_testimonial')->default(false);$t->timestamp('follow_up_at')->nullable()->index();$t->json('metadata')->nullable();$t->timestamps();});}public function down():void{Schema::dropIfExists('ext_chatbot_feedback');}};

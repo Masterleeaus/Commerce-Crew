@@ -1,0 +1,78 @@
+{
+  "product": "Commerce Crew",
+  "bundle_version": "1.0.0",
+  "modules": [
+    {
+      "directory": "chatbot",
+      "name": "Commerce Crew Core",
+      "version": "7.7.0",
+      "files": 281
+    },
+    {
+      "directory": "chatbot-agent",
+      "name": "Commerce Crew Agents",
+      "version": "3.0.0",
+      "files": 39
+    },
+    {
+      "directory": "chatbot-booking",
+      "name": "Commerce Crew Booking",
+      "version": "2.0.0",
+      "files": 24
+    },
+    {
+      "directory": "chatbot-customer-tag",
+      "name": "Commerce Crew Customer Intelligence",
+      "version": "2.0.0",
+      "files": 23
+    },
+    {
+      "directory": "chatbot-ecommerce",
+      "name": "Commerce Crew Commerce Engine",
+      "version": "4.9.0",
+      "files": 403
+    },
+    {
+      "directory": "chatbot-instagram",
+      "name": "Commerce Crew Instagram",
+      "version": "2.0.0",
+      "files": 31
+    },
+    {
+      "directory": "chatbot-messenger",
+      "name": "Commerce Crew Messenger",
+      "version": "2.0.0",
+      "files": 25
+    },
+    {
+      "directory": "chatbot-review",
+      "name": "Commerce Crew Reviews",
+      "version": "2.0.0",
+      "files": 20
+    },
+    {
+      "directory": "chatbot-telegram",
+      "name": "Commerce Crew Telegram",
+      "version": "2.0.0",
+      "files": 24
+    },
+    {
+      "directory": "chatbot-voice",
+      "name": "Commerce Crew Voice",
+      "version": "3.0.0",
+      "files": 69
+    },
+    {
+      "directory": "chatbot-voice-call",
+      "name": "Commerce Crew Voice Calls",
+      "version": "2.0.0",
+      "files": 24
+    },
+    {
+      "directory": "chatbot-whatsapp",
+      "name": "Commerce Crew WhatsApp",
+      "version": "2.0.0",
+      "files": 32
+    }
+  ]
+}
