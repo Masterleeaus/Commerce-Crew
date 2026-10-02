@@ -1,3 +1,5 @@
+![Commerce Crew Platform — GOVERNED MULTI-CHANNEL COMMERCE](docs/images/portfolio-banner.svg)
+
 <div align="center">
   <img src="docs/images/81269199-DCB9-4E6A-8B87-1FC6B8CECB99.png" alt="Commerce Crew logo" width="180" />
 
