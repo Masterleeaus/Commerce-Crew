@@ -185,7 +185,9 @@ The Commerce Engine declares compatibility with:
 
 Supporting modules retain their own compatibility contracts.
 
-## Verification
+## Integration and verification
+
+Commerce Crew is an extension bundle, not a standalone host application. It targets PHP 8.2+, Laravel 10/11, MagicAI 10.91+, and Commerce Crew Core 7.7.0+. Install and configure it through a compatible host using the host application's extension process; consult the extension-specific README files for package details.
 
 The Commerce Engine includes primitive, contract, unit and feature-level checks across its core operational boundaries, including:
 
@@ -200,6 +202,16 @@ The Commerce Engine includes primitive, contract, unit and feature-level checks 
 - Credential and tenant hardening
 - Session authority and permission boundaries
 - Retry, circuit-breaker and lifecycle behavior
+
+### Running a focused primitive check
+
+With PHP available, a standalone payment lifecycle check can be run with:
+
+```bash
+php extensions/chatbot-ecommerce/tests/run_payment_primitives.php
+```
+
+The repository also contains Laravel unit and feature tests that require a configured compatible host application. This documentation pass did not run the checks.
 
 ## Documentation
 
