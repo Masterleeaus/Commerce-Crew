@@ -19,6 +19,13 @@
 
 ---
 
+## Product architecture and engineering highlights
+
+A conversational commerce platform coordinating shopping, seller operations, support, and marketplace workflows through one governed extension suite.
+
+- **Architecture:** Three bounded roles use the Commerce Engine for catalogues, inventory, carts, checkout, orders, payments, returns, channels, and marketplace adapters, with approvals and tenant-aware sessions around consequential actions.
+- **Distinctive engineering:** Its standout systems are unified inventory/order workbenches, provider reconciliation, marketplace dry-runs and rollback, signed action sessions, and durable retry/circuit-breaker controls.
+
 ## Overview
 
 Commerce Crew is a modular conversational commerce platform that coordinates customer shopping, seller operations and support workflows through one governed operating layer.
