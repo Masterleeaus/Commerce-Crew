@@ -3,7 +3,7 @@
 <div align="center">
   <img src="docs/images/81269199-DCB9-4E6A-8B87-1FC6B8CECB99.png" alt="Commerce Crew logo" width="180" />
 
-# Commerce Crew
+# Commerce Crew Platform
 
 ### Governed conversational commerce, from discovery to fulfilment.
 
