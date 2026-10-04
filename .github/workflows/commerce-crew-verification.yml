@@ -1,0 +1,60 @@
+name: Commerce Crew Verification
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'extensions/chatbot-ecommerce/**'
+      - '.github/workflows/commerce-crew-verification.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'extensions/chatbot-ecommerce/**'
+      - '.github/workflows/commerce-crew-verification.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  payment-primitives:
+    name: Payment primitive evaluator
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - name: Run provider-independent payment evaluator
+        shell: bash
+        working-directory: extensions/chatbot-ecommerce
+        run: |
+          set -uo pipefail
+          output_file="${RUNNER_TEMP}/commerce-crew-payment-primitives.log"
+
+          set +e
+          php tests/run_payment_primitives.php >"${output_file}" 2>&1
+          status=$?
+          set -e
+
+          echo "primitive_exit_status=${status}"
+          echo "primitive_output_begin"
+          sed -n '1,80p' "${output_file}"
+          echo "primitive_output_end"
+
+          if [ "${status}" -ne 0 ]; then
+            echo "Primitive evaluator failed." >&2
+            exit "${status}"
+          fi
+
+          if ! grep -Eq '^Payment primitive checks passed: [0-9]+$' "${output_file}"; then
+            echo "Expected bounded pass summary was not found." >&2
+            exit 1
+          fi
+
+          echo "primitive_status=passed"
