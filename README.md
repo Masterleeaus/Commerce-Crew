@@ -7,233 +7,132 @@
 
 ### Governed conversational commerce, from discovery to fulfilment.
 
-**A modular commerce workforce for customers, sellers and operators across stores, marketplaces, messaging and voice.**
+**A modular commerce workforce for customers, sellers, and operators across stores, marketplaces, messaging, and voice.**
 
 </div>
 
 <p align="center">
-  <strong>Conversation-native</strong> � <strong>Multi-channel</strong> � <strong>Marketplace-aware</strong> � <strong>Approval-governed</strong> � <strong>Reliability-first</strong>
+  <strong>Conversation-native</strong> &middot; <strong>Multi-channel</strong> &middot; <strong>Marketplace-aware</strong> &middot; <strong>Approval-governed</strong> &middot; <strong>Reliability-first</strong>
 </p>
 
 <img src="docs/images/D304B615-4860-4655-B427-2A62E68A1C7C.png" alt="Commerce Crew platform overview" width="100%" />
 
----
+## The product
 
-## Product architecture and engineering highlights
+Commerce Crew makes conversation an operating surface for commerce. It connects customer discovery, seller operations, support, marketplace work, and voice interactions to one Commerce Engine instead of leaving chat beside disconnected catalogues, inventory tools, order systems, and provider dashboards.
 
-A conversational commerce platform coordinating shopping, seller operations, support, and marketplace workflows through one governed extension suite.
+The platform is designed for teams that need to coordinate three different kinds of work:
 
-- **Architecture:** Three bounded roles use the Commerce Engine for catalogues, inventory, carts, checkout, orders, payments, returns, channels, and marketplace adapters, with approvals and tenant-aware sessions around consequential actions.
-- **Distinctive engineering:** Its standout systems are unified inventory/order workbenches, provider reconciliation, marketplace dry-runs and rollback, signed action sessions, and durable retry/circuit-breaker controls.
+- help a customer find and buy the right thing;
+- help a seller manage catalogue, inventory, listings, orders, and exceptions;
+- help support teams communicate with customers while respecting authority, policy, and human escalation.
 
-## Overview
+## How the system works
 
-Commerce Crew is a modular conversational commerce platform that coordinates customer shopping, seller operations and support workflows through one governed operating layer.
-
-Instead of placing a chat interface beside commerce systems, Commerce Crew connects conversation directly to catalogue discovery, inventory, carts, checkout, payments, orders, returns, marketplaces, communications and operational controls.
-
-The platform combines an omnichannel interaction layer with the **Commerce Engine v4.9.0** and a suite of specialist modules for agents, booking, customer intelligence, social messaging, voice and reviews.
-
-## Core capabilities
-
-| Area | Capabilities |
-|---|---|
-| **Conversational commerce** | Product discovery, contextual shopping, budget locks, conversational cards, carts, checkout and human handoff |
-| **Seller operations** | Catalogue and inventory management, listing intelligence, marketplace compliance, brand voice and governed actions |
-| **Orders & fulfilment** | Native and external orders, fulfilment, returns, exception detection and customer communication linking |
-| **Payments** | Payment lifecycle orchestration, signed webhooks, capture/refund flows, settlement reconciliation and BNPL |
-| **Marketplaces** | Search, order import, governed writes, bulk operations, dry runs, rollback and rate-limit controls |
-| **Inventory coordination** | Reservation-aware allocation, marketplace reconciliation, oversell protection and conflict resolution |
-| **Channels** | Web conversation, WhatsApp, Messenger, Instagram, Telegram, voice and voice calls |
-| **Governance** | Explicit authority, approvals, tenant isolation, signed sessions, credential protection and evidence-aware actions |
-| **Reliability** | Durable queues, retries, dead letters, circuit breakers and lifecycle controls |
-
-## How it works
+Commerce Crew separates role responsibilities while keeping their commerce context shared:
 
 ```text
-Customers / Sellers / Operators
-              �
-              
-     Conversation + Voice
-              �
-              
-        Commerce Crew
-              �
-     �����������������Ŀ
-                     
- Shopping   Seller   Support
-   Role     Role      Role
-     �        �        �
-     �������������������
-              
+Customers / sellers / operators
+               |
+       Conversation + voice channels
+               |
+        +------+------+------+
+        |             |      |
+    Shopping       Seller  Support
+       role          role    role
+        |             |      |
+        +------+------+------+
+               |
         Commerce Engine
-              �
-   ����������������������Ŀ
-                        
-Catalogue   Orders    Marketplaces
-Inventory   Payments  Channels
-Checkout    Returns   Communications
-   �          �           �
-   ������������������������
-              
-   Authority � Evidence � Approvals
-   Rollback � Isolation � Reliability
+               |
+  Catalogue | inventory | checkout | orders
+  payments | returns | marketplaces | communications
+               |
+ Authority | evidence | approvals | rollback | reliability
 ```
 
-### Three-role operating model
+Consequential work is bounded by explicit permissions, approval gates, signed sessions, tenant-aware context, evidence-preserving action history, and human handoff. The architecture treats authority as part of the product, not a prompt convention.
 
-Commerce Crew separates responsibilities instead of giving one general-purpose agent unrestricted access:
+## Implemented capabilities
 
-- **Shopping role** - assists customers with discovery, comparison, cart and checkout workflows.
-- **Seller role** - supports catalogue, inventory, listings, marketplaces and operational decisions.
-- **Support role** - coordinates order communications, exceptions, returns, escalation and human handoff.
+| Area | Implemented foundations |
+| --- | --- |
+| **Conversational commerce** | Product discovery, contextual shopping, budget locks, conversational cards, carts, checkout, and human handoff. |
+| **Seller operations** | Catalogue and inventory management, listing intelligence, marketplace compliance, brand voice, and governed actions. |
+| **Orders and fulfilment** | Native and external orders, fulfilment, returns, exception detection, and linked customer communication. |
+| **Payments** | Payment lifecycle orchestration, signed webhooks, capture/refund flows, settlement reconciliation, and BNPL structures. |
+| **Marketplaces** | Search, order import, governed writes, bulk operations, dry runs, rollback, and rate-limit controls. |
+| **Inventory coordination** | Reservation-aware allocation, reconciliation, oversell protection, and conflict resolution. |
+| **Channels** | Web conversation, WhatsApp, Messenger, Instagram, Telegram, voice interaction, and voice calls. |
+| **Reliability** | Durable queues, retries, dead letters, circuit breakers, idempotent events, and lifecycle controls. |
 
-Consequential operations remain bounded by explicit permissions and approval controls.
+The Commerce Engine represents catalogue, products, inventory, pricing, carts, checkout, tax, shipping, fulfilment, payments, orders, returns, and rental/hire receivables as first-class operational capabilities. Native and external orders can converge in a unified workbench while external systems retain authority where required.
 
-## Commerce Engine
+## The engineering story
 
-The **Commerce Engine v4.9.0** is the transaction and operations core of Commerce Crew.
+Commerce Crew's standout design choices are the boundaries around state-changing work:
 
-### Native commerce
-
-Catalogue, products, inventory, pricing, carts, checkout, tax, shipping, fulfilment, payments, orders, returns and rental/hire receivables are represented as first-class commerce capabilities.
-
-### Marketplace operations
-
-Marketplace tooling supports search and read operations, order import, governed write preparation, approval-controlled execution, bulk operations, dry runs, partial rollback, listing intelligence and inventory reconciliation.
-
-### Unified order workbench
-
-Native and external orders converge into a common operational model for exception detection, settlement reconciliation, fulfilment status and linked customer communication while preserving the authority of external source systems where required.
-
-### Inventory safety
-
-Channel allocation accounts for protected stock buffers and reservations. Reconciliation detects stale state, oversell risk and undersell conditions. Automated preparation can be policy-bounded while execution remains separately governed.
-
-### Payment integrity
-
-Payment workflows model authorization, capture, partial capture, refund states and asynchronous provider events. Signed webhook verification and idempotent event handling protect state transitions.
-
-## Governance and security
-
-Commerce Crew treats authority as a product feature rather than an implementation detail.
-
-- Capability-scoped signed commerce sessions
-- Least-privilege route permissions
-- Tenant isolation and fail-closed public-session handling
-- Credential redaction, rotation and revocation controls
-- Approval gates for consequential actions
-- Human handoff and escalation paths
-- Rollback-aware marketplace operations
-- Evidence-preserving operational flows
-
-## Reliability engineering
-
-External providers and marketplaces are assumed to fail occasionally. Commerce Crew includes defensive infrastructure for those failure modes:
-
-- Deterministic retry backoff
-- Durable queues and dead-letter handling
-- Provider circuit breakers
-- Lifecycle-aware request serving
-- Idempotent asynchronous event handling
-- Explicit reconciliation rather than silent state assumptions
+- marketplace writes can be prepared, dry-run, approved, executed, and partially rolled back;
+- inventory allocation accounts for reservations and protected stock rather than trusting stale channel state;
+- payment workflows model authorization, capture, partial capture, refund, and asynchronous provider events;
+- signed webhook verification and idempotent event handling protect state transitions;
+- retries, dead letters, provider circuit breakers, and reconciliation make provider failure visible and recoverable.
 
 ## Extension suite
 
-| Module | Version | Responsibility |
-|---|---:|---|
-| **Commerce Crew Core** | 7.7.0 | Conversation and shared platform foundation |
-| **Commerce Crew Agents** | 3.0.0 | Coordinated agent workforce capabilities |
-| **Commerce Crew Commerce Engine** | **4.9.0** | Conversational, transactional and marketplace commerce |
-| Commerce Crew Booking | 2.0.0 | Booking workflows |
-| Commerce Crew Customer Intelligence | 2.0.0 | Customer tagging and segmentation |
-| Commerce Crew Instagram | 2.0.0 | Instagram Direct integration |
-| Commerce Crew Messenger | 2.0.0 | Messenger integration |
-| Commerce Crew Telegram | 2.0.0 | Telegram integration |
-| Commerce Crew WhatsApp | 2.0.0 | WhatsApp integration |
-| Commerce Crew Voice | 3.0.0 | Voice interaction |
-| Commerce Crew Voice Calls | 2.0.0 | Voice calling |
-| Commerce Crew Reviews | 2.0.0 | Reviews and feedback |
+The bundle inventory records the following modules and responsibilities:
 
-## Repository structure
+| Module | Responsibility |
+| --- | --- |
+| `chatbot/` | Shared conversation/runtime foundation: provider adapters, knowledge, structured actions, workflows, streaming, and channel delivery. |
+| `chatbot-agent/` | Agent-workforce metadata and coordinated role capabilities. |
+| `chatbot-ecommerce/` | Commerce Engine: contracts, models, migrations, routes, registries, authority middleware, queues, jobs, and commerce checks. |
+| `chatbot-booking/` | Booking workflows. |
+| `chatbot-customer-tag/` | Customer intelligence and segmentation. |
+| `chatbot-instagram/`, `chatbot-messenger/`, `chatbot-telegram/`, `chatbot-whatsapp/` | Messaging channels. |
+| `chatbot-voice/`, `chatbot-voice-call/` | Voice interaction and calling. |
+| `chatbot-review/` | Reviews and feedback. |
 
-```text
-Commerce-Crew/
-��� docs/
-�   ��� images/                 # Product artwork
-�   ��� ARCHITECTURE.md         # Architecture overview
-�   ��� CAPABILITIES.md         # Capability map
-��� extensions/
-�   ��� chatbot/                # Commerce Crew Core
-�   ��� chatbot-agent/          # Agent workforce
-�   ��� chatbot-ecommerce/      # Commerce Engine v4.9.0
-�   ��� chatbot-booking/        # Booking workflows
-�   ��� chatbot-customer-tag/   # Customer intelligence
-�   ��� chatbot-instagram/      # Instagram channel
-�   ��� chatbot-messenger/      # Messenger channel
-�   ��� chatbot-telegram/       # Telegram channel
-�   ��� chatbot-whatsapp/       # WhatsApp channel
-�   ��� chatbot-voice/          # Voice interaction
-�   ��� chatbot-voice-call/     # Voice calling
-�   ��� chatbot-review/         # Reviews and feedback
-��� bundle-inventory.json       # Extension inventory
-```
+## Code map
 
-Some internal extension keys, namespaces and provider identifiers use compatibility-oriented technical names because they form part of installation, dependency and runtime contracts.
+| Area | Entry points |
+| --- | --- |
+| Architecture | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), [`docs/CAPABILITIES.md`](docs/CAPABILITIES.md) |
+| Runtime foundation | [`extensions/chatbot/`](extensions/chatbot/) |
+| Agent workforce | [`extensions/chatbot-agent/`](extensions/chatbot-agent/) |
+| Transactional engine | [`extensions/chatbot-ecommerce/`](extensions/chatbot-ecommerce/) |
+| Bundle inventory | [`bundle-inventory.json`](bundle-inventory.json) |
+| Engine detail | [`extensions/chatbot-ecommerce/README.md`](extensions/chatbot-ecommerce/README.md) |
 
-## Platform compatibility
+## Evidence and verification
 
-The Commerce Engine declares compatibility with:
+The Commerce Engine contains primitive, contract, unit, and feature checks across catalogue, inventory, pricing, cart, checkout, payments, fulfilment, marketplace operations, the order workbench, tenant/credential boundaries, retries, circuit breakers, and lifecycle behavior.
 
-- **PHP 8.2+**
-- **Laravel 10 / 11**
-- **MagicAI 10.91+**
-- **Commerce Crew Core 7.7.0+**
-
-Supporting modules retain their own compatibility contracts.
-
-## Integration and verification
-
-Commerce Crew is an extension bundle, not a standalone host application. It targets PHP 8.2+, Laravel 10/11, MagicAI 10.91+, and Commerce Crew Core 7.7.0+. Install and configure it through a compatible host using the host application's extension process; consult the extension-specific README files for package details.
-
-The Commerce Engine includes primitive, contract, unit and feature-level checks across its core operational boundaries, including:
-
-- Native catalogue and commerce foundations
-- Inventory, pricing, cart, checkout, tax and shipping
-- Orders, fulfilment and returns
-- Payments, BNPL and rental/hire workflows
-- Conversational commerce and commerce context
-- Marketplace read/write and bulk operations
-- Listing intelligence and inventory conflicts
-- Unified order workbench behavior
-- Credential and tenant hardening
-- Session authority and permission boundaries
-- Retry, circuit-breaker and lifecycle behavior
-
-### Running a focused primitive check
-
-With PHP available, a standalone payment lifecycle check can be run with:
+With PHP available, a focused payment lifecycle check is:
 
 ```bash
 php extensions/chatbot-ecommerce/tests/run_payment_primitives.php
 ```
 
-The repository also contains Laravel unit and feature tests that require a configured compatible host application. This documentation pass did not run the checks.
+The extension also contains a broader set of standalone `run_*` checks plus Laravel unit and feature tests. Run those inside a compatible host rather than treating this bundle as a complete application: the repository does not include the host's environment, provider credentials, or infrastructure configuration.
 
-### Code map and evidence boundary
+## Compatibility and setup
 
-- [`extensions/chatbot/`](extensions/chatbot/) is the shared conversation/runtime foundation: provider generators, embeddings, knowledge training, structured actions, workflows, streaming and channel delivery.
-- [`extensions/chatbot-agent/`](extensions/chatbot-agent/) contains the agent-workforce extension and its metadata contract.
-- [`extensions/chatbot-ecommerce/`](extensions/chatbot-ecommerce/) contains the transactional Commerce Engine: contracts, models, migrations, routes, provider registries, authority middleware, queues, scheduled jobs and the 38 standalone primitive/contract checks.
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) and [`docs/CAPABILITIES.md`](docs/CAPABILITIES.md) are the concise architecture and capability maps; [`bundle-inventory.json`](bundle-inventory.json) is the release-bundle inventory.
+The Commerce Engine declares compatibility with PHP 8.2+, Laravel 10/11, MagicAI 10.91+, and Commerce Crew Core 7.7.0+. Supporting extensions retain their own contracts.
 
-The implemented AI/agent capability is a governed extension surface: the shared runtime can generate responses, retrieve knowledge, stream events and expose structured actions, while Commerce Crew supplies role-specific commerce tools and approval boundaries. The repository does not contain a standalone host application, provider credentials, or evidence that every channel and external marketplace adapter has passed live end-to-end verification. A compatible host and provider-specific integration tests are still required before production claims.
+Install Commerce Crew through a compatible host application, then configure the host's Composer dependencies, database, queues, channels, marketplace credentials, and payment providers. Consult each extension README for package-specific setup.
+
+## Scope and limitations
+
+The repository demonstrates a governed extension surface: role-specific commerce tools, approval boundaries, provider adapters, durable state, and source-level verification. It does not by itself prove live marketplace writes, payment settlement, model-provider quality, every channel integration, or production readiness. Those require host-level integration fixtures, credentials, external systems, and deployment validation.
+
+Some extension keys, namespaces, and provider identifiers retain compatibility-oriented names because they are part of installation and runtime contracts. Preserve those names when integrating the bundle.
 
 ## Documentation
 
-- [`Architecture`](docs/ARCHITECTURE.md) - system layers, design principles and operational boundaries
-- [`Capability Map`](docs/CAPABILITIES.md) - concise map of commerce, marketplace, security and channel capabilities
-- [`Commerce Engine`](extensions/chatbot-ecommerce/README.md) - engine-specific implementation and integration detail
+- [`Architecture`](docs/ARCHITECTURE.md) - system layers, design principles, and operational boundaries.
+- [`Capability Map`](docs/CAPABILITIES.md) - concise commerce, marketplace, security, and channel map.
+- [`Commerce Engine`](extensions/chatbot-ecommerce/README.md) - engine-specific implementation and integration detail.
 
 ---
 
