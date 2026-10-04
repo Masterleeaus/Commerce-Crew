@@ -17,6 +17,48 @@
 
 <img src="docs/images/D304B615-4860-4655-B427-2A62E68A1C7C.png" alt="Commerce Crew platform overview" width="100%" />
 
+## Overview
+
+Commerce Crew is a modular conversational-commerce extension suite that connects customer, seller and operator interactions to explicit commerce state, approval boundaries and provider integrations.
+
+
+## Measured evidence
+
+The cleanest standalone verification path is the Commerce Engine's payment primitive check. It contains **19 deterministic assertions** and requires no marketplace or payment-provider credentials.
+
+| Primitive checked | What the script verifies |
+| --- | --- |
+| Payment state transitions | allowed forward transitions and rejected backwards/terminal transitions |
+| Partial capture / refund arithmetic | remaining amounts are calculated in minor units |
+| Refund state derivation | partial and full refund states are selected explicitly |
+| Webhook signing | valid signed payloads are accepted |
+| Webhook tampering | modified payloads are rejected |
+| Webhook freshness | stale signatures outside the tolerance window are rejected |
+| Event idempotency | provider event IDs produce stable keys across payload retries and isolate different event IDs |
+
+Reproduce:
+
+```bash
+php extensions/chatbot-ecommerce/tests/run_payment_primitives.php
+```
+
+The repository also contains broader standalone `run_*` checks plus Laravel unit and feature tests. Those require the appropriate host context and should not be collapsed into one unsupported “all tests pass” claim.
+
+## What is new
+
+Commerce Crew's technical signature is a **governed transactional path for conversational commerce**, where model or operator intent does not bypass commerce state machines.
+
+Key mechanisms include:
+
+- **Prepared marketplace writes** with dry-run, approval, execution and partial rollback paths.
+- **Reservation-aware inventory allocation** rather than trusting stale channel stock.
+- **Explicit payment lifecycle modelling** for authorization, capture, partial capture and refunds.
+- **Signed, idempotent webhook handling** around asynchronous provider events.
+- **Retries, dead letters and circuit breakers** that make provider failure visible instead of silently losing work.
+- **Unified order handling** while preserving external-system authority where required.
+
+These controls are more important to the repository's engineering identity than the number of supported channels.
+
 ## Architecture
 
 <p align="center">
