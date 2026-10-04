@@ -1,4 +1,4 @@
-![Commerce Crew Platform - GOVERNED MULTI-CHANNEL COMMERCE](docs/images/portfolio-banner.svg)
+![Commerce Crew Platform - GOVERNED MULTI-CHANNEL COMMERCE](docs/images/commerce-crew-banner.svg)
 
 <div align="center">
   <img src="docs/images/81269199-DCB9-4E6A-8B87-1FC6B8CECB99.png" alt="Commerce Crew logo" width="180" />
@@ -16,6 +16,14 @@
 </p>
 
 <img src="docs/images/D304B615-4860-4655-B427-2A62E68A1C7C.png" alt="Commerce Crew platform overview" width="100%" />
+
+## Architecture
+
+<p align="center">
+  <img src="docs/images/commerce-crew-architecture.svg" alt="Commerce Crew flow from customers, sellers, and operators through shopping, seller, and support roles, Commerce Engine, and approval/evidence controls" width="100%" />
+</p>
+
+Commerce Crew’s bounded roles and Commerce Engine keep consequential commerce actions reviewable.
 
 ## The product
 
