@@ -1,4 +1,4 @@
-![Commerce Crew Platform — GOVERNED MULTI-CHANNEL COMMERCE](docs/images/portfolio-banner.svg)
+![Commerce Crew Platform - GOVERNED MULTI-CHANNEL COMMERCE](docs/images/portfolio-banner.svg)
 
 <div align="center">
   <img src="docs/images/81269199-DCB9-4E6A-8B87-1FC6B8CECB99.png" alt="Commerce Crew logo" width="180" />
@@ -12,7 +12,7 @@
 </div>
 
 <p align="center">
-  <strong>Conversation-native</strong> · <strong>Multi-channel</strong> · <strong>Marketplace-aware</strong> · <strong>Approval-governed</strong> · <strong>Reliability-first</strong>
+  <strong>Conversation-native</strong> � <strong>Multi-channel</strong> � <strong>Marketplace-aware</strong> � <strong>Approval-governed</strong> � <strong>Reliability-first</strong>
 </p>
 
 <img src="docs/images/D304B615-4860-4655-B427-2A62E68A1C7C.png" alt="Commerce Crew platform overview" width="100%" />
@@ -52,41 +52,41 @@ The platform combines an omnichannel interaction layer with the **Commerce Engin
 
 ```text
 Customers / Sellers / Operators
-              │
-              ▼
+              �
+              
      Conversation + Voice
-              │
-              ▼
+              �
+              
         Commerce Crew
-              │
-     ┌────────┼────────┐
-     ▼        ▼        ▼
+              �
+     �����������������Ŀ
+                     
  Shopping   Seller   Support
    Role     Role      Role
-     │        │        │
-     └────────┼────────┘
-              ▼
+     �        �        �
+     �������������������
+              
         Commerce Engine
-              │
-   ┌──────────┼───────────┐
-   ▼          ▼           ▼
+              �
+   ����������������������Ŀ
+                        
 Catalogue   Orders    Marketplaces
 Inventory   Payments  Channels
 Checkout    Returns   Communications
-   │          │           │
-   └──────────┼───────────┘
-              ▼
-   Authority · Evidence · Approvals
-   Rollback · Isolation · Reliability
+   �          �           �
+   ������������������������
+              
+   Authority � Evidence � Approvals
+   Rollback � Isolation � Reliability
 ```
 
 ### Three-role operating model
 
 Commerce Crew separates responsibilities instead of giving one general-purpose agent unrestricted access:
 
-- **Shopping role** — assists customers with discovery, comparison, cart and checkout workflows.
-- **Seller role** — supports catalogue, inventory, listings, marketplaces and operational decisions.
-- **Support role** — coordinates order communications, exceptions, returns, escalation and human handoff.
+- **Shopping role** - assists customers with discovery, comparison, cart and checkout workflows.
+- **Seller role** - supports catalogue, inventory, listings, marketplaces and operational decisions.
+- **Support role** - coordinates order communications, exceptions, returns, escalation and human handoff.
 
 Consequential operations remain bounded by explicit permissions and approval controls.
 
@@ -159,24 +159,24 @@ External providers and marketplaces are assumed to fail occasionally. Commerce C
 
 ```text
 Commerce-Crew/
-├── docs/
-│   ├── images/                 # Product artwork
-│   ├── ARCHITECTURE.md         # Architecture overview
-│   └── CAPABILITIES.md         # Capability map
-├── extensions/
-│   ├── chatbot/                # Commerce Crew Core
-│   ├── chatbot-agent/          # Agent workforce
-│   ├── chatbot-ecommerce/      # Commerce Engine v4.9.0
-│   ├── chatbot-booking/        # Booking workflows
-│   ├── chatbot-customer-tag/   # Customer intelligence
-│   ├── chatbot-instagram/      # Instagram channel
-│   ├── chatbot-messenger/      # Messenger channel
-│   ├── chatbot-telegram/       # Telegram channel
-│   ├── chatbot-whatsapp/       # WhatsApp channel
-│   ├── chatbot-voice/          # Voice interaction
-│   ├── chatbot-voice-call/     # Voice calling
-│   └── chatbot-review/         # Reviews and feedback
-└── bundle-inventory.json       # Extension inventory
+��� docs/
+�   ��� images/                 # Product artwork
+�   ��� ARCHITECTURE.md         # Architecture overview
+�   ��� CAPABILITIES.md         # Capability map
+��� extensions/
+�   ��� chatbot/                # Commerce Crew Core
+�   ��� chatbot-agent/          # Agent workforce
+�   ��� chatbot-ecommerce/      # Commerce Engine v4.9.0
+�   ��� chatbot-booking/        # Booking workflows
+�   ��� chatbot-customer-tag/   # Customer intelligence
+�   ��� chatbot-instagram/      # Instagram channel
+�   ��� chatbot-messenger/      # Messenger channel
+�   ��� chatbot-telegram/       # Telegram channel
+�   ��� chatbot-whatsapp/       # WhatsApp channel
+�   ��� chatbot-voice/          # Voice interaction
+�   ��� chatbot-voice-call/     # Voice calling
+�   ��� chatbot-review/         # Reviews and feedback
+��� bundle-inventory.json       # Extension inventory
 ```
 
 Some internal extension keys, namespaces and provider identifiers use compatibility-oriented technical names because they form part of installation, dependency and runtime contracts.
@@ -220,11 +220,20 @@ php extensions/chatbot-ecommerce/tests/run_payment_primitives.php
 
 The repository also contains Laravel unit and feature tests that require a configured compatible host application. This documentation pass did not run the checks.
 
+### Code map and evidence boundary
+
+- [`extensions/chatbot/`](extensions/chatbot/) is the shared conversation/runtime foundation: provider generators, embeddings, knowledge training, structured actions, workflows, streaming and channel delivery.
+- [`extensions/chatbot-agent/`](extensions/chatbot-agent/) contains the agent-workforce extension and its metadata contract.
+- [`extensions/chatbot-ecommerce/`](extensions/chatbot-ecommerce/) contains the transactional Commerce Engine: contracts, models, migrations, routes, provider registries, authority middleware, queues, scheduled jobs and the 38 standalone primitive/contract checks.
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) and [`docs/CAPABILITIES.md`](docs/CAPABILITIES.md) are the concise architecture and capability maps; [`bundle-inventory.json`](bundle-inventory.json) is the release-bundle inventory.
+
+The implemented AI/agent capability is a governed extension surface: the shared runtime can generate responses, retrieve knowledge, stream events and expose structured actions, while Commerce Crew supplies role-specific commerce tools and approval boundaries. The repository does not contain a standalone host application, provider credentials, or evidence that every channel and external marketplace adapter has passed live end-to-end verification. A compatible host and provider-specific integration tests are still required before production claims.
+
 ## Documentation
 
-- [`Architecture`](docs/ARCHITECTURE.md) — system layers, design principles and operational boundaries
-- [`Capability Map`](docs/CAPABILITIES.md) — concise map of commerce, marketplace, security and channel capabilities
-- [`Commerce Engine`](extensions/chatbot-ecommerce/README.md) — engine-specific implementation and integration detail
+- [`Architecture`](docs/ARCHITECTURE.md) - system layers, design principles and operational boundaries
+- [`Capability Map`](docs/CAPABILITIES.md) - concise map of commerce, marketplace, security and channel capabilities
+- [`Commerce Engine`](extensions/chatbot-ecommerce/README.md) - engine-specific implementation and integration detail
 
 ---
 
@@ -232,3 +241,4 @@ The repository also contains Laravel unit and feature tests that require a confi
   <strong>Commerce Crew</strong><br />
   Conversation becomes the operating surface for commerce.
 </div>
+
